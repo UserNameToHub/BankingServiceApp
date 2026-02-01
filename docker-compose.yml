@@ -10,7 +10,7 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HOSTNAME: localhost
     ports:
-      - "8080:8080"
+      - "8085:8085"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
