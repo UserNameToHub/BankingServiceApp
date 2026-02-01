@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -17,15 +18,12 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firstname")
-    private String firstname;
-
-    @Column(name = "lastname")
-    private String lastname;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "birthday")
     private LocalDate birthday;
 
-    @Column(name = "passportID", unique = true)
-    private Byte passportID;
+    @Column(name = "balance")
+    private BigDecimal balance;
 }
