@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BankingServiceApp</name>
 	<description>BankingServiceApp</description>
+	<packaging>pom</packaging>
 	<url/>
 	<licenses>
 		<license/>
@@ -29,6 +30,7 @@
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -41,6 +43,15 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<modules>
+		<module>accounts-service</module>
+		<module>cash-service</module>
+		<module>notifications-service</module>
+		<module>transfer-service</module>
+		<module>my-bank-front-app-skeleton</module>
+		<module>gateway-service</module>
+	</modules>
 
 	<build>
 		<plugins>
