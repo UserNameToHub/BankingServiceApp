@@ -1,5 +1,44 @@
 spring:
   application:
     name: gateway-service
+
+    spring:
+      security:
+        oauth2:
+          resourceserver:
+            jwt:
+              # Адрес issuer (Keycloak realm). Gateway по нему получает ключи
+              # и параметры токена, чтобы валидировать JWT от UI
+              issuer-uri: http://localhost:8080/realms/bank-realm
+
+      cloud:
+        gateway:
+          server:
+            # JwtTokenRelay - берет JWT-токен из входящего запроса и добавить его в заголовок Authorization
+            # для исходящего запроса к микросервису
+
+            # Первый маршрут
+            - id: transfer-service
+              uri: http://localhost:8083
+              predicates:
+                - Path=/transfers/**
+              filters:
+                - name: JwtTokenRelay
+
+            # Второй маршрут
+            - id: accounts-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/accounts/**
+              filters:
+                - name: JwtTokenRelay
+
+            # Третий маршрут
+            - id: cash-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/cash/**
+              filters:
+                - name: JwtTokenRelay
 server:
   port: 8087
