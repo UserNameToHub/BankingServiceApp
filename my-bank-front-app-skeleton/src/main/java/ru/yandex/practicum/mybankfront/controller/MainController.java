@@ -1,11 +1,16 @@
 package ru.yandex.practicum.mybankfront.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.yandex.practicum.mybankfront.client.TransferClient;
 import ru.yandex.practicum.mybankfront.controller.dto.CashAction;
 import ru.yandex.practicum.mybankfront.controller.stub.AccountStub;
 
@@ -32,11 +37,16 @@ import java.time.LocalDate;
  *
  * С примерами использования можно ознакомиться в тестовом классе заглушке AccountStub
  */
+
+@Slf4j
 @Controller
 public class MainController {
     // TODO: Удалить заглушку, так как используется только для ознакомительных целей
     @Autowired
     private AccountStub accountStub;
+
+    @Autowired
+    private TransferClient transferClient;
 
     /**
      * GET /.
@@ -56,6 +66,19 @@ public class MainController {
      */
     @GetMapping("/account")
     public String getAccount(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var infoLog = "OAuth2Token is {}";
+
+        if (authentication instanceof OAuth2AuthenticationToken oauth2AuthToken) {
+            log.info(infoLog, true);
+            String authorizedClientRegistrationId = oauth2AuthToken.getAuthorizedClientRegistrationId();
+            String name = oauth2AuthToken.getName();
+            log.info("Auth client registration id :: {}", authorizedClientRegistrationId);
+            log.info("Name :: {}", name);
+            transferClient.submitToGateway();
+        } else {
+            log.info(infoLog, false);
+        }
         // TODO: Заменить на то, что описано в комментарии к методу
         accountStub.fillModel(model, null, null);
 
