@@ -7,8 +7,8 @@ spring:
       client:
         registration:
           keycloak:
-            client-id: bank-ui
-            client-secret: miHrfcm3xJmKvKb38xFfLkMokgcYkfFl
+            client-id:  bank-ui
+            client-secret: pqnFeulAhboSmCuUrnI7a3wwa5siFQTN
             authorization-grant-type: authorization_code
             scope: openid, profile
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
@@ -17,6 +17,13 @@ spring:
           keycloak:
             issuer-uri: http://localhost:8080/realms/bank-realm
 
+#    logging:
+#      level:
+#        org:
+#          springframework:
+#            security: DEBUG
+#            web: DEBUG
+
   main:
     allow-bean-definition-overriding: true
 
@@ -24,4 +31,4 @@ server:
   port: 8086
 
 gateway:
-  base-url: http://localhost:8084
+  base-url: http://localhost:8087
