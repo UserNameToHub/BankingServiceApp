@@ -16,7 +16,7 @@ spring:
         # JwtTokenRelay - берет JWT-токен из входящего запроса и добавить его в заголовок Authorization
         # для исходящего запроса к микросервису
 
-        # Первый маршрут
+        # Первый маршрут - transfer
         - id: transfer-service
           uri: http://localhost:8083
           predicates:
@@ -24,7 +24,7 @@ spring:
           filters:
             - name: JwtTokenRelay
 
-        # Второй маршрут
+        # Второй маршрут - accounts
         - id: accounts-service
           uri: http://localhost:8081
           predicates:
@@ -32,13 +32,13 @@ spring:
           filters:
             - name: JwtTokenRelay
 
-        # Третий маршрут
+        # Третий маршрут - cash
         - id: cash-service
           uri: http://localhost:8082
           predicates:
             - Path=/cash/**
           filters:
-            - name: JwtTokenRelay
+            - name: JwtTokenRelayFilter
 
 server:
   port: 8087
