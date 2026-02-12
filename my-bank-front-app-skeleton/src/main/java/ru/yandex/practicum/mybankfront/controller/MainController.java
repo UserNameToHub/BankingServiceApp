@@ -75,7 +75,7 @@ public class MainController {
             String name = oauth2AuthToken.getName();
             log.info("Auth client registration id :: {}", authorizedClientRegistrationId);
             log.info("Name :: {}", name);
-            transferClient.submitToGateway();
+            transferClient.submitToGateway("/accounts");
         } else {
             log.info(infoLog, false);
         }
