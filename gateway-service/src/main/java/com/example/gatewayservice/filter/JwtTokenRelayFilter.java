@@ -21,6 +21,7 @@ public class JwtTokenRelayFilter extends GenericFilterBean {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String jwtToken = authHeader.substring("Bearer ".length());
             httpRequest.setAttribute("Authorization", "Bearer " + jwtToken);
+            log.info("Header is {}", httpRequest.getHeader("Authorization"));
         }
 
         log.debug("Sending the token  from proxy further along the route");

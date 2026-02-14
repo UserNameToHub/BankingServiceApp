@@ -15,6 +15,7 @@ import ru.yandex.practicum.mybankfront.controller.dto.CashAction;
 import ru.yandex.practicum.mybankfront.controller.stub.AccountStub;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 /**
  * Контроллер main.html.
@@ -149,8 +150,9 @@ public class MainController {
             @RequestParam("value") int value,
             @RequestParam("login") String login
     ) {
-        // TODO: Заменить на то, что описано в комментарии к методу
-        accountStub.transfer(model, value, login);
+        Map<String, String> params = Map
+                .of("value", "value", "login", "login");
+        transferClient.submitToGateway("/transfer", params);
 
         return "main";
     }
