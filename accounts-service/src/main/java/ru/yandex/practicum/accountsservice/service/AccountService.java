@@ -111,8 +111,9 @@ public class AccountService {
                 .map(acc -> (AccountDto) accountDtoMapper.map(acc))
                 .toList();
 
-        Response response = (Response) accountResponseDtoMapper.map(account);
-        response.setAccounts(accountDtos);
+        Response preResponse = (Response) accountResponseDtoMapper.map(account);
+        preResponse.setAccounts(accountDtos);
+        response = preResponse;
 
         return response;
     }
