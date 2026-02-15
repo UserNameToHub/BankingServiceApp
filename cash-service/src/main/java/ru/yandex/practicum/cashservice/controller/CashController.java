@@ -19,6 +19,6 @@ public class CashController {
     @PostMapping
     public String edit(@RequestParam("value") int value,
                        @RequestParam("cashAction")CashAction action) {
-        return service.performMoneyTransfer(new CashDto(value, action));
+        return service.performMoneyTransfer(value, action);
     }
 }
