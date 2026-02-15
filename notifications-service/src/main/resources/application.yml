@@ -1,5 +1,14 @@
 spring:
   application:
     name: notifications-service
+
 server:
   port: 8084
+
+app:
+  rmq-limit: 5
+
+routing-key:
+  account: accountRK
+  transfer: transferRK
+  cash: cashRK
