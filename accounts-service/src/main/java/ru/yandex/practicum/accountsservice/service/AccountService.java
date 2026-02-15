@@ -50,7 +50,7 @@ public class AccountService {
                 } else {
                     ResponseShort preResponse = ResponseShort.builder()
                             .amount(account.getBalance())
-                            .error(WITHDRAWAL_SUCCESSFUL + " " + "Снято %d руб".formatted(dto.value()))
+                            .error(INSUFFICIENT_FUNDS)
                             .info(null)
                             .build();
                     response = preResponse;
