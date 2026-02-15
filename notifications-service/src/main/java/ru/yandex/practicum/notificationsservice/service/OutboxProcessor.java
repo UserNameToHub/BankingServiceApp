@@ -1,50 +1,78 @@
 package ru.yandex.practicum.notificationsservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.Repository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.notificationsservice.dto.Microservice;
+import ru.yandex.practicum.notificationsservice.entity.Account;
+import ru.yandex.practicum.notificationsservice.entity.Cash;
+import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
+import ru.yandex.practicum.notificationsservice.entity.Transfer;
+import ru.yandex.practicum.notificationsservice.repository.AccountRepository;
 import ru.yandex.practicum.notificationsservice.repository.CashRepository;
 import ru.yandex.practicum.notificationsservice.repository.OutboxRepository;
+import ru.yandex.practicum.notificationsservice.repository.TransferRepository;
 import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.util.Objects;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@EnableRabbit
 @RequiredArgsConstructor
 public class OutboxProcessor {
     private final ObjectMapper objectMapper;
     private final OutboxRepository outboxRepository;
-    private final Repository repository;
     private final RabbitTemplate rabbitTemplate;
+    @Qualifier("accountBind")
+    private final Binding accountBind;
+    @Qualifier("cashBind")
+    private final Binding cashBind;
+    @Qualifier("transferBind")
+    private final Binding transferBind;
+    private final AccountRepository accountRepository;
+    private final TransferRepository transferRepository;
+    private final CashRepository cashRepository;
+    @Value(value = "${app.rmq-limit}")
+    private final int limit = 5;
 
 
 
-    @Scheduled(fixedDelayString = "PT1s") // Обрабатываем таблицу Outbox каждую секунду
-    public void process() throws IOException, InterruptedException {
-        Page<OrderCreateOutbox> outboxEntries = outboxRepository.findAll(Pageable.ofSize(limit));
-        List<Order> orders = orderRepository.findAllById(outboxEntries.map(OrderCreateOutbox::getOrderId));
+    @Scheduled(fixedDelayString = "PT1s")
+    public void process() throws AmqpException {
+        preProcess(accountRepository, Microservice.ACCOUNT, accountBind, Account.class);
+        preProcess(transferRepository, Microservice.TRANSFER, transferBind, Transfer.class);
+        preProcess(cashRepository, Microservice.CASH, cashBind, Cash.class);
+    }
 
-        rabbitTemplate.send();
-        // Подключаемся к NATS только на время отправки сообщений
-        try (Connection natsConnection = Nats.connect(natsConnectionUrl)) {
-            for (Order order : orders) {
-                // Преобразуем заказы в JSON-формат
-                byte[] orderRaw = objectMapper.writeValueAsBytes(order);
+    private <T> void preProcess(CrudRepository repository, Microservice microSrv, Binding bind, Class<T> tClass) {
+        Page<CreateOutbox> outboxEntries = outboxRepository.findAllByMicroservice(microSrv, Pageable.ofSize(limit));
+        List<T> objects = (List<T>) repository.findAllById(outboxEntries.stream()
+                .filter(item -> item.getMicroservice().equals(microSrv))
+                .map(CreateOutbox::getEntityId)
+                .collect(Collectors.toList()));
 
-                // Отправляем данные в брокер
-                natsConnection.publish(topicName, orderRaw);
+        for (T obj: objects) {
+            byte[] raw = objectMapper.writeValueAsBytes(obj);
+            try {
+                rabbitTemplate.convertAndSend(bind.getRoutingKey(), raw);
+            } catch (AmqpException ex) {
+                throw new AmqpException(ex.getMessage());
             }
         }
 
-        // Удаляем обработанные записи
         List<Long> processedIds = outboxEntries.stream()
-                .map(OrderCreateOutbox::getId)
+                .map(CreateOutbox::getId)
                 .toList();
         outboxRepository.deleteAllById(processedIds);
     }
-
 }
