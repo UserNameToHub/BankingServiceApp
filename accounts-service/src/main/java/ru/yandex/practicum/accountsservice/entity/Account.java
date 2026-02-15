@@ -3,11 +3,13 @@ package ru.yandex.practicum.accountsservice.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
 @Entity
 @Builder
 @Table(name = "accounts")
@@ -28,5 +30,5 @@ public class Account {
     private LocalDate birthday;
 
     @Column(name = "balance")
-    private BigDecimal balance;
+    private int balance;
 }
