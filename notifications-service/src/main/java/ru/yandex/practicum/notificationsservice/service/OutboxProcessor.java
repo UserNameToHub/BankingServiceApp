@@ -45,8 +45,6 @@ public class OutboxProcessor {
     @Value(value = "${app.rmq-limit}")
     private final int limit = 5;
 
-
-
     @Scheduled(fixedDelayString = "PT1s")
     public void process() throws AmqpException {
         preProcess(accountRepository, Microservice.ACCOUNT, accountBind, Account.class);
