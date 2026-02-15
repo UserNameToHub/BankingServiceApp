@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.notificationsservice.dto.Microservice;
+import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
 import ru.yandex.practicum.notificationsservice.entity.Transfer;
 import ru.yandex.practicum.notificationsservice.repository.OutboxRepository;
@@ -34,7 +34,7 @@ public class TransferService {
         log.debug("Starting create createOutbox");
         CreateOutbox createOutbox = CreateOutbox.builder()
                 .entityId(savedTransfer.getId())
-                .microservice(Microservice.TRANSFER)
+                .microserviceType(MicroserviceType.TRANSFER)
                 .build();
         outboxRepository.save(createOutbox);
         return savedTransfer;

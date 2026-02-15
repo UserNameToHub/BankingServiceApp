@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.notificationsservice.dto.CashAction;
-import ru.yandex.practicum.notificationsservice.dto.Microservice;
+import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
 import ru.yandex.practicum.notificationsservice.entity.Cash;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
 import ru.yandex.practicum.notificationsservice.repository.CashRepository;
@@ -34,7 +34,7 @@ public class CashService {
         log.debug("Starting create createOutbox for {}", username);
         CreateOutbox createOutbox = CreateOutbox.builder()
                 .entityId(savedCash.getId())
-                .microservice(Microservice.CASH)
+                .microserviceType(MicroserviceType.CASH)
                 .build();
         outboxRepository.save(createOutbox);
         return savedCash;

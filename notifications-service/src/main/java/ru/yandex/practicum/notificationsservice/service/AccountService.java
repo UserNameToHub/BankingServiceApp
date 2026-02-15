@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.notificationsservice.dto.Microservice;
+import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
 import ru.yandex.practicum.notificationsservice.entity.Account;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
 import ru.yandex.practicum.notificationsservice.repository.AccountRepository;
@@ -33,7 +33,7 @@ public class AccountService {
         log.debug("Starting create createOutbox for {}", username);
         CreateOutbox createOutbox = CreateOutbox.builder()
                 .entityId(savedAccount.getId())
-                .microservice(Microservice.ACCOUNT)
+                .microserviceType(MicroserviceType.ACCOUNT)
                 .build();
         outboxRepository.save(createOutbox);
         return savedAccount;

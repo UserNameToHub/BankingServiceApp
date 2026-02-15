@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.notificationsservice.dto.Microservice;
+import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
 import ru.yandex.practicum.notificationsservice.entity.Account;
 import ru.yandex.practicum.notificationsservice.entity.Cash;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
@@ -47,15 +47,15 @@ public class OutboxProcessor {
 
     @Scheduled(fixedDelayString = "PT1s")
     public void process() throws AmqpException {
-        preProcess(accountRepository, Microservice.ACCOUNT, accountBind, Account.class);
-        preProcess(transferRepository, Microservice.TRANSFER, transferBind, Transfer.class);
-        preProcess(cashRepository, Microservice.CASH, cashBind, Cash.class);
+        preProcess(accountRepository, MicroserviceType.ACCOUNT, accountBind, Account.class);
+        preProcess(transferRepository, MicroserviceType.TRANSFER, transferBind, Transfer.class);
+        preProcess(cashRepository, MicroserviceType.CASH, cashBind, Cash.class);
     }
 
-    private <T> void preProcess(CrudRepository repository, Microservice microSrv, Binding bind, Class<T> tClass) {
+    private <T> void preProcess(CrudRepository repository, MicroserviceType microSrv, Binding bind, Class<T> tClass) {
         Page<CreateOutbox> outboxEntries = outboxRepository.findAllByMicroservice(microSrv, Pageable.ofSize(limit));
         List<T> objects = (List<T>) repository.findAllById(outboxEntries.stream()
-                .filter(item -> item.getMicroservice().equals(microSrv))
+                .filter(item -> item.getMicroserviceType().equals(microSrv))
                 .map(CreateOutbox::getEntityId)
                 .collect(Collectors.toList()));
 
