@@ -1,32 +1,37 @@
 package ru.yandex.practicum.accountsservice.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.accountsservice.dto.CashAction;
-import ru.yandex.practicum.accountsservice.dto.CashDto;
-import ru.yandex.practicum.accountsservice.dto.TransferDto;
+import ru.yandex.practicum.accountsservice.dto.*;
+import ru.yandex.practicum.accountsservice.service.AccountService;
 
 import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/account")
+@RequiredArgsConstructor
 public class MainController {
-    @PostMapping("cash")
-    public String editCash(@RequestBody CashDto action) {
+    private final AccountService accountService;
 
+    @PostMapping("cash")
+    public IResponseMessage editCash(@RequestBody CashDto action) {
+        return accountService.editCash(action);
     }
 
     @PostMapping("/transfer")
-    public String executeTransfer(@RequestMapping TransferDto transferDto) {
+    public IResponseMessage executeTransfer(@RequestBody TransferDto transferDto) {
+        return accountService.makeTransfer(transferDto);
+    }
 
+    @PostMapping
+    public IResponseMessage editAccount(@RequestParam("login")String login,
+                              @RequestParam("name") String name,
+                              @RequestParam("birthdate") LocalDate birthdate) {
+        return accountService.editAccount(login, name, birthdate);
     }
 
     @GetMapping
-    public String account() {
-
-    }
-    @PostMapping
-    public String editAccount(@RequestParam("name") String name,
-                              @RequestParam("birthdate") LocalDate birthdate) {
-
+    public IResponseMessage getAccount(String login) {
+        return accountService.get(login);
     }
 }

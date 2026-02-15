@@ -3,51 +3,76 @@ package ru.yandex.practicum.accountsservice.service;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.accountsservice.dto.CashDto;
-import ru.yandex.practicum.accountsservice.dto.TransferDto;
+import ru.yandex.practicum.accountsservice.dto.*;
 import ru.yandex.practicum.accountsservice.entity.Account;
 import ru.yandex.practicum.accountsservice.exception.NoAccountException;
+import ru.yandex.practicum.accountsservice.mapper.IMapper;
 import ru.yandex.practicum.accountsservice.repository.AccountRepository;
-import static ru.yandex.practicum.accountsservice.util.Constant.*;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static ru.yandex.practicum.accountsservice.util.Constant.*;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AccountService {
+    @Qualifier(value = "accMapper")
+    private final IMapper accountDtoMapper;
+    @Qualifier(value = "accRespMapper")
+    private final IMapper accountResponseDtoMapper;
     private final AccountRepository accountRepository;
-    private String message = USER_NOT_FOUND;
+    private IResponseMessage response;
 
     @Transactional
-    public String editCash(CashDto dto) throws NoAccountException {
+    public IResponseMessage editCash(CashDto dto) throws NoAccountException {
         Account account = getAccount(dto.login());
 
         switch (dto.action()) {
             case GET -> {
                 if (isValidTransaction(account.getBalance(), dto.value())) {
                     account.setBalance(account.getBalance() + dto.value());
-                    accountRepository.save(account);
+                    Account savedAccount = accountRepository.save(account);
+
+                    ResponseShort preResponse = ResponseShort.builder()
+                            .amount(savedAccount.getBalance())
+                            .info(WITHDRAWAL_SUCCESSFUL + " " + "Снято %d руб".formatted(dto.value()))
+                            .error(null)
+                            .build();
+
+                    response = preResponse;
                 } else {
-                    message = INSUFFICIENT_FUNDS;
+                    ResponseShort preResponse = ResponseShort.builder()
+                            .amount(account.getBalance())
+                            .error(WITHDRAWAL_SUCCESSFUL + " " + "Снято %d руб".formatted(dto.value()))
+                            .info(null)
+                            .build();
+                    response = preResponse;
                 }
             }
             default -> {
                 account.setBalance(dto.value());
                 accountRepository.save(account);
-                message = WITHDRAWAL_SUCCESSFUL;
+                ResponseShort preResponse = ResponseShort.builder()
+                        .amount(account.getBalance())
+                        .info(WITHDRAWAL_SUCCESSFUL + " " + "Снято %d руб".formatted(dto.value()))
+                        .error(null)
+                        .build();
+                response = preResponse;
             }
         }
 
-        return message;
+        return response;
     }
 
     @Transactional
-    public String makeTransfer(TransferDto transferDto) {
+    public IResponseMessage makeTransfer(TransferDto transferDto) {
        Account insufficient = getAccount(transferDto.from());
        Account recipient = getAccount(transferDto.to());
 
@@ -57,13 +82,51 @@ public class AccountService {
            accountRepository.save(insufficient);
            accountRepository.save(recipient);
 
-           message = TRANSACTION_SUCCESSFUL;
+           ResponseShort preResponse = ResponseShort.builder()
+                   .amount(insufficient.getBalance())
+                   .info(TRANSACTION_SUCCESSFUL + " " + "Успешно переведено %d руб клиенту %s")
+                   .error(null)
+                   .build();
+
+           response = preResponse;
        } else {
            log.warn("The transfer operation failed due to insufficient funds in the account");
-           message = TRANSACTION_FAILED + ". " + INSUFFICIENT_FUNDS;
+           ResponseShort preResponse = ResponseShort.builder()
+                   .amount(insufficient.getBalance())
+                   .error(TRANSACTION_FAILED + ". " + INSUFFICIENT_FUNDS)
+                   .info(null)
+                   .build();
+
+           response = preResponse;
        }
 
-       return message;
+       return response;
+    }
+
+    public IResponseMessage get(String login) {
+        Account account = getAccount(login);
+        List<Account> accounts = (ArrayList<Account>) accountRepository.findAll();
+        List<AccountDto> accountDtos = accounts.stream()
+                .filter(acc -> !acc.equals(login))
+                .map(acc -> (AccountDto) accountDtoMapper.map(acc))
+                .toList();
+
+        Response response = (Response) accountResponseDtoMapper.map(account);
+        response.setAccounts(accountDtos);
+
+        return response;
+    }
+
+    public IResponseMessage editAccount(String login, String name, LocalDate birthdate) {
+        Account account = getAccount(login);
+        account.setName(name);
+        account.setBirthday(birthdate);
+        Account savedAccount = accountRepository.save(account);
+
+        Response preResponse = (Response) accountResponseDtoMapper.map(savedAccount);
+        response = preResponse;
+
+        return response;
     }
 
     private Boolean isValidTransaction(@NonNull int baseValue, @NonNull int withdrawaValue) {
@@ -73,6 +136,6 @@ public class AccountService {
     private Account getAccount(@NonNull String login) throws NoAccountException {
         return accountRepository
                 .findByLogin(login)
-                .orElseThrow(() -> new NoAccountException(message));
+                .orElseThrow(() -> new NoAccountException(USER_NOT_FOUND));
     }
 }

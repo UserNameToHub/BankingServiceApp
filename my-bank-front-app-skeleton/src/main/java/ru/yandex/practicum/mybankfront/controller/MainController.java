@@ -1,5 +1,6 @@
 package ru.yandex.practicum.mybankfront.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -41,13 +42,13 @@ import java.util.Map;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class MainController {
     // TODO: Удалить заглушку, так как используется только для ознакомительных целей
     @Autowired
     private AccountStub accountStub;
 
-    @Autowired
-    private TransferClient transferClient;
+    private final TransferClient transferClient;
 
     /**
      * GET /.
@@ -67,19 +68,19 @@ public class MainController {
      */
     @GetMapping("/account")
     public String getAccount(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        var infoLog = "OAuth2Token is {}";
-
-        if (authentication instanceof OAuth2AuthenticationToken oauth2AuthToken) {
-            log.info(infoLog, true);
-            String authorizedClientRegistrationId = oauth2AuthToken.getAuthorizedClientRegistrationId();
-            String name = oauth2AuthToken.getName();
-            log.info("Auth client registration id :: {}", authorizedClientRegistrationId);
-            log.info("Name :: {}", name);
-            transferClient.submitToGateway("/account");
-        } else {
-            log.info(infoLog, false);
-        }
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        var infoLog = "OAuth2Token is {}";
+//
+//        if (authentication instanceof OAuth2AuthenticationToken oauth2AuthToken) {
+//            log.info(infoLog, true);
+//            String authorizedClientRegistrationId = oauth2AuthToken.getAuthorizedClientRegistrationId();
+//            String name = oauth2AuthToken.getName();
+//            log.info("Auth client registration id :: {}", authorizedClientRegistrationId);
+//            log.info("Name :: {}", name);
+////            transferClient.submitToGateway("/account");
+//        } else {
+//            log.info(infoLog, false);
+//        }
         // TODO: Заменить на то, что описано в комментарии к методу
         accountStub.fillModel(model, null, null);
 
