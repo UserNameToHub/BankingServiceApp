@@ -14,7 +14,8 @@ public class TransferController {
     private final TransferService service;
 
     @PostMapping
-    public String makeTransfer(@RequestBody TransferDto dto) {
-        return service.transfer(dto);
+    public String makeTransfer(@RequestParam("value") int value,
+                               @RequestParam("login") String login) {
+        return service.transfer(value, login);
     }
 }
