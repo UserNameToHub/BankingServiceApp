@@ -10,13 +10,13 @@ import ru.yandex.practicum.cashservice.dto.CashDto;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AccountClient {
+public class CashClient {
     private final WebClient accountsWebClient;
 
     public String execute(CashDto cash) {
         return accountsWebClient
                 .post()
-                .uri("/accounts/transfer")
+                .uri("/accounts/cash")
                 .bodyValue(cash)
                 .retrieve()
                 .bodyToMono(String.class)
