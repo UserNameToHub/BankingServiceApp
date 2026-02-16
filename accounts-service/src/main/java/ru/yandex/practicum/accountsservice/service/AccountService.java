@@ -130,8 +130,8 @@ public class AccountService {
         return response;
     }
 
-    private Boolean isValidTransaction(@NonNull int baseValue, @NonNull int withdrawaValue) {
-        return baseValue - withdrawaValue >= 0;
+    private Boolean isValidTransaction(@NonNull int baseValue, @NonNull int withdrawalValue) {
+        return baseValue - withdrawalValue >= 0;
     }
 
     private Account getAccount(@NonNull String login) throws NoAccountException {
