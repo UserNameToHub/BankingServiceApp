@@ -2,5 +2,13 @@ spring:
   application:
     name: cash-service
 
+  cloud:
+    zookeeper:
+      connect-string: localhost:2181
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+
 server:
   port: 8082
