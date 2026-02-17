@@ -2,8 +2,36 @@ spring:
   application:
     name: notifications-service
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/bank-realm
+
+      client:
+        registration:
+          notification-service:
+            provider: keycloak
+            client-id: notification-service
+            client-secret: transfer-service-secret
+            authorization-grant-type: client_credentials
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/bank-realm
+
+  cloud:
+    zookeeper:
+      connect-string: localhost:2181
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+
 server:
   port: 8084
+
+page:
+  limit: 5
 
 app:
   rmq-limit: 5

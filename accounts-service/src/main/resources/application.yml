@@ -15,6 +15,22 @@ spring:
       config:
         enabled: true
 
+  oauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: http://localhost:8080/realms/bank-realm
+
+    client:
+      registration:
+        transfer-service:
+          provider: keycloak
+          client-id: transfer-service
+          client-secret: transfer-service-secret
+          authorization-grant-type: client_credentials
+      provider:
+        keycloak:
+          issuer-uri: http://localhost:8080/realms/bank-realm
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5434/accounts_db

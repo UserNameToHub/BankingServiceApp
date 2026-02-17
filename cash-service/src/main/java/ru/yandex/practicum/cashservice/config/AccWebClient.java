@@ -32,8 +32,7 @@ public class AccWebClient {
 
     @Bean
     public WebClient accountsWebClient(
-            OAuth2AuthorizedClientManager authorizedClientManager,
-            @Value("${accounts-service.base-url}") String accountsServiceBaseUrl
+            OAuth2AuthorizedClientManager authorizedClientManager
     ) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
@@ -41,7 +40,6 @@ public class AccWebClient {
         oauth2.setDefaultClientRegistrationId("transfer-service");
 
         return WebClient.builder()
-                .baseUrl(accountsServiceBaseUrl)
                 .apply(oauth2.oauth2Configuration())
                 .build();
     }

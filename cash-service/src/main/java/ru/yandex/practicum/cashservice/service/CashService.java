@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.cashservice.Client.CashClient;
 import ru.yandex.practicum.cashservice.dto.CashAction;
 import ru.yandex.practicum.cashservice.dto.CashDto;
+import ru.yandex.practicum.cashservice.dto.CashResponse;
 
 @Slf4j
 @Component
@@ -14,10 +15,10 @@ import ru.yandex.practicum.cashservice.dto.CashDto;
 public class CashService {
     private final CashClient client;
 
-    public String performMoneyTransfer(int value, CashAction action) {
+    public CashResponse performMoneyTransfer(int value, CashAction action) {
         CashDto cashDto = new CashDto(value, action, getAuthName());
         log.info("A cash request for {}, amount {}, type {}", cashDto.login(),  cashDto.value(), cashDto.action());
-        String result = client.execute(cashDto);
+        CashResponse result = client.execute(cashDto);
         log.info("Successful cash: {}", result);
         return result;
     }

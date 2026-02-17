@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
+import ru.yandex.practicum.notificationsservice.dto.enumiration.MicroserviceType;
 import ru.yandex.practicum.notificationsservice.entity.Account;
 import ru.yandex.practicum.notificationsservice.entity.Cash;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
@@ -42,8 +42,8 @@ public class OutboxProcessor {
     private final AccountRepository accountRepository;
     private final TransferRepository transferRepository;
     private final CashRepository cashRepository;
-    @Value(value = "${app.rmq-limit}")
-    private final int limit = 5;
+    @Value(value = "${page.limit}")
+    private int limit;
 
     @Scheduled(fixedDelayString = "PT1s")
     public void process() throws AmqpException {

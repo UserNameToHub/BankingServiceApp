@@ -1,34 +1,35 @@
 package ru.yandex.practicum.notificationsservice.controller;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.notificationsservice.dto.CashAction;
-
-import java.time.LocalDate;
+import ru.yandex.practicum.notificationsservice.dto.AccountDro;
+import ru.yandex.practicum.notificationsservice.dto.CashDto;
+import ru.yandex.practicum.notificationsservice.dto.TransferDto;
+import ru.yandex.practicum.notificationsservice.service.AccountService;
+import ru.yandex.practicum.notificationsservice.service.CashService;
+import ru.yandex.practicum.notificationsservice.service.TransferService;
 
 @RestController("/notifications")
+@RequiredArgsConstructor
 public class MainController {
-    @PostMapping("accounts")
-    public void edit(@RequestParam String username,
-                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate birthday) {
+    private final TransferService transferService;
+    private final CashService cashService;
+    private final AccountService accountService;
 
+    @PostMapping("account")
+    public void edit(@RequestBody AccountDro accountDro) {
+        accountService.create(accountDro);
     }
-
 
     @PostMapping("cash")
-    public void action(@RequestParam String username,
-                       @RequestParam CashAction action,
-                       @RequestParam int amount) {
-
+    public void action(CashDto cashDto) {
+        cashService.create(cashDto);
     }
 
-
-    @PostMapping("/transfers")
-    public void transfer(@RequestParam String fromUser,
-                         @RequestParam String toUser,
-                         @RequestParam int amount) {
-
+    @PostMapping("/transfer")
+    public void transfer(TransferDto transferDto) {
+        transferService.create(transferDto);
     }
 }

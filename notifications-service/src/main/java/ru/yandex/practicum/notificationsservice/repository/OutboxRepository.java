@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
+import ru.yandex.practicum.notificationsservice.dto.enumiration.MicroserviceType;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
 
 @Repository

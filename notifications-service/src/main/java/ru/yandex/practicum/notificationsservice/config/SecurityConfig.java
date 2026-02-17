@@ -1,9 +1,8 @@
-package ru.yandex.practicum.cashservice.config;
+package ru.yandex.practicum.notificationsservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain cashSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain transferSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/actuator/**").permitAll();
             auth.anyRequest().authenticated();
@@ -32,6 +31,7 @@ public class SecurityConfig {
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
         );
 
+        // Возвращаем 403 с текстом ошибки из исключения
         http.exceptionHandling(exception -> exception
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     response.setStatus(HttpStatus.FORBIDDEN.value());
@@ -76,8 +76,8 @@ public class SecurityConfig {
                 .map(role -> (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toList());
 
-        if (roles.contains("CASH_WRITE")) {
-            authorities.add(new SimpleGrantedAuthority("cash.write"));
+        if (roles.contains("NOTIFICATION_WRITE")) {
+            authorities.add(new SimpleGrantedAuthority("notification.write"));
         }
 
         return authorities;

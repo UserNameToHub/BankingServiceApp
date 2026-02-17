@@ -1,5 +1,6 @@
 package ru.yandex.practicum.mybankfront.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -21,8 +22,9 @@ public class WebClientConfig {
     }
 
     @Bean
-    public WebClient gatewayWebClient() {
+    public WebClient gatewayWebClient(@Value("${gateway.base-url}") String baseUrl) {
         return WebClient.builder()
+                .baseUrl(baseUrl)
                 .filter(addAccessTokenHeader())
                 .build();
     }

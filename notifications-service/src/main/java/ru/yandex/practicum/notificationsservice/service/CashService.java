@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.notificationsservice.dto.CashAction;
-import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
+import ru.yandex.practicum.notificationsservice.dto.CashDto;
+import ru.yandex.practicum.notificationsservice.dto.enumiration.MicroserviceType;
 import ru.yandex.practicum.notificationsservice.entity.Cash;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
 import ru.yandex.practicum.notificationsservice.repository.CashRepository;
@@ -22,16 +22,16 @@ public class CashService {
     private final OutboxRepository outboxRepository;
 
     @Transactional
-    public Cash create(String username, CashAction action, int amount) {
-        log.debug("Starting create cash for {}", username);
+    public Cash create(CashDto cashDto) {
+        log.debug("Starting create cash for {}", cashDto.username());
         Cash cash = Cash.builder()
                 .createAt(LocalDate.now())
-                .amount(amount)
-                .action(action)
+                .amount(cashDto.amount())
+                .action(cashDto.action())
                 .build();
         Cash savedCash = cashRepository.save(cash);
 
-        log.debug("Starting create createOutbox for {}", username);
+        log.debug("Starting create createOutbox for {}", cashDto.username());
         CreateOutbox createOutbox = CreateOutbox.builder()
                 .entityId(savedCash.getId())
                 .microserviceType(MicroserviceType.CASH)

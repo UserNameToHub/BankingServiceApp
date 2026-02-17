@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
+import ru.yandex.practicum.notificationsservice.dto.enumiration.MicroserviceType;
+import ru.yandex.practicum.notificationsservice.dto.TransferDto;
 import ru.yandex.practicum.notificationsservice.entity.CreateOutbox;
 import ru.yandex.practicum.notificationsservice.entity.Transfer;
 import ru.yandex.practicum.notificationsservice.repository.OutboxRepository;
@@ -21,13 +22,14 @@ public class TransferService {
     private final OutboxRepository outboxRepository;
 
     @Transactional
-    public Transfer create(String fromUser, String toUser, int amount) {
-        log.debug("Starting create transfer from {}, to {}, amount {}", fromUser, toUser, amount);
+    public Transfer create(TransferDto transferDto) {
+        log.debug("Starting create transfer from {}, to {}, amount {}",
+                transferDto.fromUser(), transferDto.toUser(), transferDto.amount());
         Transfer transfer = Transfer.builder()
                 .createAt(LocalDate.now())
-                .fromUser(fromUser)
-                .toUser(toUser)
-                .amount(amount)
+                .fromUser(transferDto.fromUser())
+                .toUser(transferDto.toUser())
+                .amount(transferDto.amount())
                 .build();
         Transfer savedTransfer = transferRepository.save(transfer);
 

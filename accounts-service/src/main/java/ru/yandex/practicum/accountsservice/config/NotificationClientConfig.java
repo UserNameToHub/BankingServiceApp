@@ -1,4 +1,4 @@
-package ru.yandex.ptracticum.transferservice.config;
+package ru.yandex.practicum.accountsservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,10 +6,9 @@ import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
-public class AccClientConfig {
+public class NotificationClientConfig {
     @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(
             ClientRegistrationRepository clientRegistrationRepository,
@@ -37,7 +36,7 @@ public class AccClientConfig {
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 =
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
 
-        oauth2.setDefaultClientRegistrationId("cash-service");
+        oauth2.setDefaultClientRegistrationId("account-service");
 
         return WebClient.builder()
                 .apply(oauth2.oauth2Configuration())

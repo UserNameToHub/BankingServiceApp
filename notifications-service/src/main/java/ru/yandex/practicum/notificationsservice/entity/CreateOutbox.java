@@ -2,7 +2,7 @@ package ru.yandex.practicum.notificationsservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.yandex.practicum.notificationsservice.dto.MicroserviceType;
+import ru.yandex.practicum.notificationsservice.dto.enumiration.MicroserviceType;
 
 @Data
 @Table(name = "create_outbox")

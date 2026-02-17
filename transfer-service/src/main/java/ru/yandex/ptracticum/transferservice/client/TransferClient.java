@@ -1,4 +1,4 @@
-package ru.yandex.practicum.cashservice.Client;
+package ru.yandex.ptracticum.transferservice.client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,41 +6,40 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import ru.yandex.practicum.cashservice.dto.CashDto;
-import ru.yandex.practicum.cashservice.dto.CashResponse;
-import ru.yandex.practicum.cashservice.exception.DiscoveryException;
+import ru.yandex.ptracticum.transferservice.exception.DiscoveryException;
+import ru.yandex.ptracticum.transferservice.dto.TransferDto;
+import ru.yandex.ptracticum.transferservice.dto.TransferResponse;
 
 import java.util.List;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CashClient {
+public class TransferClient {
     private final WebClient WebClient;
     private final DiscoveryClient discoveryClient;
 
-    public CashResponse execute(CashDto cash) {
-        String host = discover("account-service");
-        transferNotification(cash);
+    public TransferResponse transfer(TransferDto transferDto) {
+        String accountHost = discover("accounts-service");
+        transferNotification(transferDto);
         return WebClient
                 .post()
-                .uri(host + "/account/cash")
-                .bodyValue(cash)
+                .uri(accountHost + "/account/transfer")
+                .bodyValue(transferDto)
                 .retrieve()
-                .bodyToMono(CashResponse.class)
+                .bodyToMono(TransferResponse.class)
                 .block();
     }
 
-    private void transferNotification(CashDto cash) {
-        String accountHost = discover("notification-service");
+    private void transferNotification(TransferDto transferDto) {
+        String host = discover("notification-service");
         WebClient
-                .post()
-                .uri(accountHost + "/cash")
-                .bodyValue(cash)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+            .post()
+            .uri(host + "/notifications/transfer")
+            .bodyValue(transferDto)
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
     }
 
     private String discover(String service) {

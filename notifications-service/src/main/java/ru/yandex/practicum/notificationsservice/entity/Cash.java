@@ -2,7 +2,7 @@ package ru.yandex.practicum.notificationsservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.yandex.practicum.notificationsservice.dto.CashAction;
+import ru.yandex.practicum.notificationsservice.dto.enumiration.CashAction;
 
 import java.time.LocalDate;
 

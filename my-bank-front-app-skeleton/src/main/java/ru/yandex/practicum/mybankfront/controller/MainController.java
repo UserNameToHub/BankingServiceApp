@@ -2,158 +2,92 @@ package ru.yandex.practicum.mybankfront.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.mybankfront.client.TransferClient;
+import ru.yandex.practicum.mybankfront.controller.dto.AccountResponse;
 import ru.yandex.practicum.mybankfront.controller.dto.CashAction;
-import ru.yandex.practicum.mybankfront.controller.stub.AccountStub;
+import ru.yandex.practicum.mybankfront.controller.dto.ResponseShort;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
-
-/**
- * Контроллер main.html.
- *
- * Используемая модель для main.html:
- *      model.addAttribute("name", name);
- *      model.addAttribute("birthdate", birthdate.format(DateTimeFormatter.ISO_DATE));
- *      model.addAttribute("sum", sum);
- *      model.addAttribute("accounts", accounts);
- *      model.addAttribute("errors", errors);
- *      model.addAttribute("info", info);
- *
- * Поля модели:
- *      name - Фамилия Имя текущего пользователя, String (обязательное)
- *      birthdate - дата рождения текущего пользователя, String в формате 'YYYY-MM-DD' (обязательное)
- *      sum - сумма на счету текущего пользователя, Integer (обязательное)
- *      accounts - список аккаунтов, которым можно перевести деньги, List<AccountDto> (обязательное)
- *      errors - список ошибок после выполнения действий, List<String> (не обязательное)
- *      info - строка успешности после выполнения действия, String (не обязательное)
- *
- * С примерами использования можно ознакомиться в тестовом классе заглушке AccountStub
- */
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MainController {
-    // TODO: Удалить заглушку, так как используется только для ознакомительных целей
-    @Autowired
-    private AccountStub accountStub;
-
     private final TransferClient transferClient;
 
-    /**
-     * GET /.
-     * Редирект на GET /account
-     */
     @GetMapping
     public String index() {
         return "redirect:/account";
     }
 
-    /**
-     * GET /account.
-     * Что нужно сделать:
-     * 1. Сходить в сервис accounts через Gateway API для получения данных аккаунта по REST
-     * 2. Заполнить модель main.html полученными из ответа данными
-     * 3. Текущего пользователя можно получить из контекста Security
-     */
     @GetMapping("/account")
     public String getAccount(Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        var infoLog = "OAuth2Token is {}";
-//
-//        if (authentication instanceof OAuth2AuthenticationToken oauth2AuthToken) {
-//            log.info(infoLog, true);
-//            String authorizedClientRegistrationId = oauth2AuthToken.getAuthorizedClientRegistrationId();
-//            String name = oauth2AuthToken.getName();
-//            log.info("Auth client registration id :: {}", authorizedClientRegistrationId);
-//            log.info("Name :: {}", name);
-////            transferClient.submitToGateway("/account");
-//        } else {
-//            log.info(infoLog, false);
-//        }
-        // TODO: Заменить на то, что описано в комментарии к методу
-        accountStub.fillModel(model, null, null);
+        AccountResponse response = transferClient.submit2GatewayGET("/account", null, AccountResponse.class);
+        model.addAttribute("name", response.getName());
+        model.addAttribute("birthday", response.getBirthdate());
+        model.addAttribute("sum", response.getAmount());
+        model.addAttribute("accounts", response.getAccounts());
 
         return "main";
     }
 
-    /**
-     * POST /account.
-     * Что нужно сделать:
-     * 1. Сходить в сервис accounts через Gateway API для изменения данных текущего пользователя по REST
-     * 2. Заполнить модель main.html полученными из ответа данными
-     * 3. Текущего пользователя можно получить из контекста Security
-     *
-     * Изменяемые данные:
-     * 1. name - Фамилия Имя
-     * 2. birthdate - дата рождения в формате YYYY-DD-MM
-     */
     @PostMapping("/account")
     public String editAccount(
             Model model,
             @RequestParam("name") String name,
             @RequestParam("birthdate") LocalDate birthdate
     ) {
-        // TODO: Заменить на то, что описано в комментарии к методу
-        accountStub.setNameAndBirthdate(name, birthdate);
-        accountStub.fillModel(model, null, null);
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("birthday", birthdate.format(DateTimeFormatter.ISO_DATE));
+
+        AccountResponse response = transferClient.submit2GatewayPOST("/account", params, AccountResponse.class);
+        model.addAttribute("name", response.getName());
+        model.addAttribute("birthday", response.getBirthdate());
+        model.addAttribute("sum", response.getAmount());
+        model.addAttribute("accounts", response.getAccounts());
 
         return "main";
     }
 
-    /**
-     * POST /cash.
-     * Что нужно сделать:
-     * 1. Сходить в сервис cash через Gateway API для снятия/пополнения счета текущего аккаунта по REST
-     * 2. Заполнить модель main.html полученными из ответа данными
-     * 3. Текущего пользователя можно получить из контекста Security
-     *
-     * Параметры:
-     * 1. value - сумма списания
-     * 2. action - GET (снять), PUT (пополнить)
-     */
     @PostMapping("/cash")
     public String editCash(
             Model model,
             @RequestParam("value") int value,
             @RequestParam("action") CashAction action
             ) {
-        // TODO: Заменить на то, что описано в комментарии к методу
-        accountStub.editCash(model, value, action);
+        Map<String, String> params = new HashMap<>();
+        params.put("value", String.valueOf(value));
+        params.put("action", action.toString());
+
+        ResponseShort response= transferClient.submit2GatewayPOST("/cash", params, ResponseShort.class);
+        model.addAttribute("errors", response.getError());
+        model.addAttribute("info", response.getInfo());
 
         return "main";
     }
 
-    /**
-     * POST /transfer.
-     * Что нужно сделать:
-     * 1. Сходить в сервис accounts через Gateway API для перевода со счета текущего аккаунта на счет другого аккаунта по REST
-     * 2. Заполнить модель main.html полученными из ответа данными
-     * 3. Текущего пользователя можно получить из контекста Security
-     *
-     * Параметры:
-     * 1. value - сумма списания
-     * 2. login - логин пользователя получателя
-     */
     @PostMapping("/transfer")
     public String transfer(
             Model model,
             @RequestParam("value") int value,
             @RequestParam("login") String login
     ) {
-        Map<String, String> params = Map
-                .of("value", "value", "login", "login");
-        transferClient.submitToGateway("/transfer", params);
+        Map<String, String> params = new HashMap<>();
+        params.put("value", String.valueOf(value));
+        params.put("login", login);
+
+        ResponseShort response= transferClient.submit2GatewayPOST("/transfer", params, ResponseShort.class);
+        model.addAttribute("errors", response.getError());
+        model.addAttribute("info", response.getInfo());
 
         return "main";
     }
