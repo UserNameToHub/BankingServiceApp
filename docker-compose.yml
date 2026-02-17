@@ -20,3 +20,69 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
+  accounts-service:
+    build: C:\Users\Александр\YandexPracticumProgect\BankingServiceApp\accounts-service\Dockerfile
+    image: accounts-image
+    container_name: account
+    ports:
+      - "8081:8081"
+    depends_on:
+      - bank-ui
+      - gateway-service
+      - notification-service
+    environment:
+      - DB_NAME=accounts_db
+      - DB_HOST=postgresql-accounts
+      - DB_PORT=5432
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=user
+
+  cash-service:
+    build: C:\Users\Александр\YandexPracticumProgect\BankingServiceApp\cash-service\Dockerfile
+    image: cash-image
+    container_name: cash
+    ports:
+      - "8082:8082"
+    depends_on:
+      - bank-ui
+      - gateway-service
+      - notification-service
+      - accounts-service
+
+  gateway-service:
+    build: C:\Users\Александр\YandexPracticumProgect\BankingServiceApp\gateway-service\Dockerfile
+    image: gateway-image
+    container_name: gateway
+    ports:
+      - "8087:8087"
+
+  bank-ui:
+    build: C:\Users\Александр\YandexPracticumProgect\BankingServiceApp\my-bank-front-app-skeleton
+    image: bankui-image
+    container_name: bankui
+    ports:
+      - "8086:8086"
+    depends_on:
+      - gateway-service
+      - accounts-service
+      - transfer-service
+      - cash-service
+      -
+  transfer-service:
+    build: C:\Users\Александр\YandexPracticumProgect\BankingServiceApp\transfer-service
+    image: transfer-image
+    container_name: transfer
+    ports:
+      - "8083:8083"
+    depends_on:
+      - bank-ui
+      - gateway-service
+      - notification-service
+      - accounts-service
+
+  notification-service:
+    build: C:\Users\Александр\YandexPracticumProgect\BankingServiceApp\notifications-service
+    image: notification-image
+    container_name: notification
+    ports:
+      - "8084:8084"
