@@ -67,7 +67,7 @@ services:
       - accounts-service
       - transfer-service
       - cash-service
-      -
+      - keycloak
   transfer-service:
     build: C:\Users\Александр\YandexPracticumProgect\BankingServiceApp\transfer-service
     image: transfer-image
