@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: cash-service
+
+  oauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: http://localhost:8080/realms/bank-realm
+
+    client:
+      registration:
+        cash-service:
+          provider: keycloak
+          client-id: cash-service
+          client-secret: vyaCq9VeSNIEwP84quDZbmX0rMzEPYLc
+          authorization-grant-type: client_credentials
+      provider:
+        keycloak:
+          issuer-uri: http://localhost:8080/realms/bank-realm
+
+  cloud:
+    zookeeper:
+      connect-string: localhost:2181
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+
+server:
+  port: 8082

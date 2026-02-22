@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS account
+(
+    Id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    userName VARCHAR(250),
+    birthday DATE,
+    createAt DATE
+);
+
+CREATE TABLE IF NOT EXISTS cash
+(
+    Id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    username VARCHAR(250),
+    action VARCHAR(250),
+    amount INTEGER,
+    private DATE
+);
+
+CREATE TABLE IF NOT EXISTS transfer
+(
+    Id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    fromUser VARCHAR(250),
+    toUser VARCHAR(250),
+    amount INTEGER,
+    createAt DATE
+);
+
+CREATE TABLE IF NOT EXISTS CreateOutbox
+(
+    Id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    entityId BIGINT,
+    microserviceType VARCHAR(250)
+);

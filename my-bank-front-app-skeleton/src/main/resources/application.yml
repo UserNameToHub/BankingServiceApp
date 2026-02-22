@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: my-bank-front-app
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id:  bank-ui
+            client-secret: pqnFeulAhboSmCuUrnI7a3wwa5siFQTN
+            authorization-grant-type: authorization_code
+            scope: openid, profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/bank-realm
+
+#    logging:
+#      level:
+#        org:
+#          springframework:
+#            security: DEBUG
+#            web: DEBUG
+
+  main:
+    allow-bean-definition-overriding: true
+
+server:
+  port: 8086
+
+gateway:
+  base-url: http://localhost:8087

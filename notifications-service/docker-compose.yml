@@ -1,0 +1,14 @@
+services:
+  postgresql-notification:
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=user
+      - POSTGRES_DB=accounts_db
+    volumes:
+      - postgres_data:/var/lib/postgresql-notification/data
+
+volumes:
+  postgres_data:
