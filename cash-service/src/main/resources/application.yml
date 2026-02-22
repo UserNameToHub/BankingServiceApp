@@ -24,7 +24,7 @@ spring:
       discovery:
         enabled: true
       config:
-        enabled: true
+        enabled: false
 
 server:
   port: 8082
