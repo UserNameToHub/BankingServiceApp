@@ -1,0 +1,7 @@
+image:
+  repository: account-image
+
+replicas: 3
+
+service:
+  name: account-service-cluster-ip

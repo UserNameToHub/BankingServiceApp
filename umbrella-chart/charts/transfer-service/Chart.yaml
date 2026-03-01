@@ -1,0 +1,11 @@
+apiVersion: v2
+name: transfer-service
+description: transfer-service
+version: 0.4.0
+dependencies:
+  - name: accounts-service
+    version: "0.1.0"
+    repository: "file://charts/accounts-service"
+  - name: notification-service
+    version: "0.3.0"
+    repository: "file://charts/notification-service"

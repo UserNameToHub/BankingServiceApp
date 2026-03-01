@@ -1,0 +1,21 @@
+accounts-service:
+  replicaCount: 2
+  image:
+    tag: "1.0.0"
+
+cash-service:
+  replicaCount: 1
+  service:
+    type: NodePort
+
+
+notification-service:
+  replicaCount: 1
+  service:
+    type: NodePort
+
+
+transfer-service:
+  replicaCount: 1
+  service:
+    type: NodePort

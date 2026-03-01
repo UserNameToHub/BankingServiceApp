@@ -1,0 +1,7 @@
+image:
+  repository: notification-image
+
+replicas: 3
+
+service:
+  name: notification-service-cluster-ip

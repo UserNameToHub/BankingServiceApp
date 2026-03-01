@@ -1,0 +1,7 @@
+databases:
+  - name: postgresql-accounts
+    image: postgres:latest
+    host: postgresql-accounts
+    port: 5432
+    username: user
+    password: user
