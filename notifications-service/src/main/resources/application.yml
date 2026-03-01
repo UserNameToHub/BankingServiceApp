@@ -30,13 +30,13 @@ spring:
           keycloak:
             issuer-uri: http://localhost:8080/realms/bank-realm
 
-  cloud:
-    zookeeper:
-      connect-string: localhost:2181
-      discovery:
-        enabled: true
-      config:
-        enabled: true
+#  cloud:
+#    zookeeper:
+#      connect-string: localhost:2181
+#      discovery:
+#        enabled: true
+#      config:
+#        enabled: true
 
 server:
   port: 8084
