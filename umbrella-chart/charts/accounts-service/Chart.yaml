@@ -1,0 +1,11 @@
+apiVersion: v2
+name: account-service
+description: account-service
+version: 0.1.0
+dependencies:
+  - name: notification-service
+    version: "0.3.0"
+    repository: "file://charts/notification-service"
+  - name: database-service
+    version: "0.5.0"
+    repository: "file://charts/database-service"

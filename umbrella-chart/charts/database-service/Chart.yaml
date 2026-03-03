@@ -1,0 +1,4 @@
+apiVersion: v2
+name: db-chart
+description: Databases
+version: 0.5.0

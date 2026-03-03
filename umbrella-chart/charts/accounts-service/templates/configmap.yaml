@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+data:
+  username: user
+  password: user
+  database: accounts_db
+  port: "5432:5432"
+  host: postgresql-accounts

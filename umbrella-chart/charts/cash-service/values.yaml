@@ -1,0 +1,7 @@
+image:
+  repository: cash-image
+
+replicas: 3
+
+service:
+  name: cash-service-cluster-ip

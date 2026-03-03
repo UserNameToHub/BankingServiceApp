@@ -1,0 +1,31 @@
+{{- range $db := .Values.databases }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $db.name }}-statefulset
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $db.name }}
+  serviceName: {{ $db.name }}-service
+  template:
+    metadata:
+      labels:
+        app: {{ $db.name }}
+    spec:
+      containers:
+        - name: {{ $db.name }}-container
+          image: your-database-image:tag
+          env:
+            - name: DATABASE_HOST
+              value: {{ $db.host }}
+            - name: DATABASE_PORT
+              value: "{{ $db.port }}"
+            - name: DATABASE_USERNAME
+              value: {{ $db.username }}
+            - name: DATABASE_PASSWORD
+              value: {{ $db.password }}
+            - name: DATABASE_NAME
+              value: {{ $db.name }}
+{{- end }}
