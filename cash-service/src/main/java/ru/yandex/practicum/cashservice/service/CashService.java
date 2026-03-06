@@ -8,18 +8,21 @@ import ru.yandex.practicum.cashservice.Client.CashClient;
 import ru.yandex.practicum.cashservice.dto.CashAction;
 import ru.yandex.practicum.cashservice.dto.CashDto;
 import ru.yandex.practicum.cashservice.dto.CashResponse;
+import ru.yandex.practicum.cashservice.kafka.MessageProducer;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class CashService {
     private final CashClient client;
+    private final MessageProducer producer;
 
     public CashResponse performMoneyTransfer(int value, CashAction action) {
         CashDto cashDto = new CashDto(value, action, getAuthName());
         log.info("A cash request for {}, amount {}, type {}", cashDto.login(),  cashDto.value(), cashDto.action());
         CashResponse result = client.execute(cashDto);
         log.info("Successful cash: {}", result);
+        producer.sendMessage(cashDto);
         return result;
     }
 
