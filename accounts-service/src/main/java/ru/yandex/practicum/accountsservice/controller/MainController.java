@@ -2,8 +2,8 @@ package ru.yandex.practicum.accountsservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.accountsservice.client.AccountClient;
 import ru.yandex.practicum.accountsservice.dto.*;
+import ru.yandex.practicum.accountsservice.kafka.MessageProducer;
 import ru.yandex.practicum.accountsservice.service.AccountService;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class MainController {
     private final AccountService accountService;
-    private final AccountClient accountClient;
+    private final MessageProducer producer;
 
     @PostMapping("cash")
     public IResponseMessage editCash(@RequestBody CashDto action) {
@@ -29,7 +29,7 @@ public class MainController {
     public IResponseMessage editAccount(@RequestParam("login")String login,
                               @RequestParam("name") String name,
                               @RequestParam("birthdate") LocalDate birthdate) {
-        accountClient.transferNotification(new AccountShortDto(name, birthdate));
+        producer.sendMessage(new AccountShortDto(name, birthdate));
         return accountService.editAccount(login, name, birthdate);
     }
 
