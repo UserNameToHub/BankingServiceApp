@@ -43,3 +43,7 @@ spec:
                       configMapKeyRef:
                         name: database-config
                         key: port
+                  - name: ACKS
+                    mountPath: { { .Values.global.producerConfig.acks } }
+                  - name: RETRIES
+                    mountPath: { { .Values.global.producerConfig.retries } }

@@ -19,3 +19,14 @@ transfer-service:
   replicaCount: 1
   service:
     type: NodePort
+
+global:
+  producerConfig:
+    bootstrap.servers: "kafka-broker-service:9092"
+    acks: "all"
+    retries: "3"
+
+  consumerConfig:
+    bootstrap.servers: "kafka-broker-service:9092"
+    group.id: "consumer-group"
+    auto.offset.reset: "earliest"

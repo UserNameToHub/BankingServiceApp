@@ -17,3 +17,8 @@ spec:
               image: {{ .Values.image.repository }}
               ports:
                 - containerPort: 8083
+              env:
+                - name: ACKS
+                  mountPath: { { .Values.global.producerConfig.acks } }
+                - name: RETRIES
+                  mountPath: { { .Values.global.producerConfig.retries } }
