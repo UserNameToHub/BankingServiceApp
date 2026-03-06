@@ -18,25 +18,25 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CashService {
-    private final CashRepository cashRepository;
-    private final OutboxRepository outboxRepository;
-
-    @Transactional
-    public Cash create(CashDto cashDto) {
-        log.debug("Starting create cash for {}", cashDto.username());
-        Cash cash = Cash.builder()
-                .createAt(LocalDate.now())
-                .amount(cashDto.amount())
-                .action(cashDto.action())
-                .build();
-        Cash savedCash = cashRepository.save(cash);
-
-        log.debug("Starting create createOutbox for {}", cashDto.username());
-        CreateOutbox createOutbox = CreateOutbox.builder()
-                .entityId(savedCash.getId())
-                .microserviceType(MicroserviceType.CASH)
-                .build();
-        outboxRepository.save(createOutbox);
-        return savedCash;
-    }
+//    private final CashRepository cashRepository;
+//    private final OutboxRepository outboxRepository;
+//
+//    @Transactional
+//    public Cash create(CashDto cashDto) {
+//        log.debug("Starting create cash for {}", cashDto.username());
+//        Cash cash = Cash.builder()
+//                .createAt(LocalDate.now())
+//                .amount(cashDto.amount())
+//                .action(cashDto.action())
+//                .build();
+//        Cash savedCash = cashRepository.save(cash);
+//
+//        log.debug("Starting create createOutbox for {}", cashDto.username());
+//        CreateOutbox createOutbox = CreateOutbox.builder()
+//                .entityId(savedCash.getId())
+//                .microserviceType(MicroserviceType.CASH)
+//                .build();
+//        outboxRepository.save(createOutbox);
+//        return savedCash;
+//    }
 }

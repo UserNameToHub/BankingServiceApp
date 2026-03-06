@@ -30,47 +30,47 @@ import java.util.stream.Collectors;
 @EnableRabbit
 @RequiredArgsConstructor
 public class OutboxProcessor {
-    private final ObjectMapper objectMapper;
-    private final OutboxRepository outboxRepository;
-    private final RabbitTemplate rabbitTemplate;
-    @Qualifier("accountBind")
-    private final Binding accountBind;
-    @Qualifier("cashBind")
-    private final Binding cashBind;
-    @Qualifier("transferBind")
-    private final Binding transferBind;
-    private final AccountRepository accountRepository;
-    private final TransferRepository transferRepository;
-    private final CashRepository cashRepository;
-    @Value(value = "${page.limit}")
-    private int limit;
-
-    @Scheduled(fixedDelayString = "PT1s")
-    public void process() throws AmqpException {
-        preProcess(accountRepository, MicroserviceType.ACCOUNT, accountBind, Account.class);
-        preProcess(transferRepository, MicroserviceType.TRANSFER, transferBind, Transfer.class);
-        preProcess(cashRepository, MicroserviceType.CASH, cashBind, Cash.class);
-    }
-
-    private <T> void preProcess(CrudRepository repository, MicroserviceType microSrv, Binding bind, Class<T> tClass) {
-        Page<CreateOutbox> outboxEntries = outboxRepository.findAllByMicroservice(microSrv, Pageable.ofSize(limit));
-        List<T> objects = (List<T>) repository.findAllById(outboxEntries.stream()
-                .filter(item -> item.getMicroserviceType().equals(microSrv))
-                .map(CreateOutbox::getEntityId)
-                .collect(Collectors.toList()));
-
-        for (T obj: objects) {
-            byte[] raw = objectMapper.writeValueAsBytes(obj);
-            try {
-                rabbitTemplate.convertAndSend(bind.getRoutingKey(), raw);
-            } catch (AmqpException ex) {
-                throw new AmqpException(ex.getMessage());
-            }
-        }
-
-        List<Long> processedIds = outboxEntries.stream()
-                .map(CreateOutbox::getId)
-                .toList();
-        outboxRepository.deleteAllById(processedIds);
-    }
+//    private final ObjectMapper objectMapper;
+//    private final OutboxRepository outboxRepository;
+//    private final RabbitTemplate rabbitTemplate;
+//    @Qualifier("accountBind")
+//    private final Binding accountBind;
+//    @Qualifier("cashBind")
+//    private final Binding cashBind;
+//    @Qualifier("transferBind")
+//    private final Binding transferBind;
+//    private final AccountRepository accountRepository;
+//    private final TransferRepository transferRepository;
+//    private final CashRepository cashRepository;
+//    @Value(value = "${page.limit}")
+//    private int limit;
+//
+//    @Scheduled(fixedDelayString = "PT1s")
+//    public void process() throws AmqpException {
+//        preProcess(accountRepository, MicroserviceType.ACCOUNT, accountBind, Account.class);
+//        preProcess(transferRepository, MicroserviceType.TRANSFER, transferBind, Transfer.class);
+//        preProcess(cashRepository, MicroserviceType.CASH, cashBind, Cash.class);
+//    }
+//
+//    private <T> void preProcess(CrudRepository repository, MicroserviceType microSrv, Binding bind, Class<T> tClass) {
+//        Page<CreateOutbox> outboxEntries = outboxRepository.findAllByMicroservice(microSrv, Pageable.ofSize(limit));
+//        List<T> objects = (List<T>) repository.findAllById(outboxEntries.stream()
+//                .filter(item -> item.getMicroserviceType().equals(microSrv))
+//                .map(CreateOutbox::getEntityId)
+//                .collect(Collectors.toList()));
+//
+//        for (T obj: objects) {
+//            byte[] raw = objectMapper.writeValueAsBytes(obj);
+//            try {
+//                rabbitTemplate.convertAndSend(bind.getRoutingKey(), raw);
+//            } catch (AmqpException ex) {
+//                throw new AmqpException(ex.getMessage());
+//            }
+//        }
+//
+//        List<Long> processedIds = outboxEntries.stream()
+//                .map(CreateOutbox::getId)
+//                .toList();
+//        outboxRepository.deleteAllById(processedIds);
+//    }
 }
