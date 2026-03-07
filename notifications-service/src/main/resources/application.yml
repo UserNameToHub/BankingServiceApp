@@ -30,6 +30,14 @@ spring:
           keycloak:
             issuer-uri: http://localhost:8080/realms/bank-realm
 
+  kafka:
+    bootstrap-servers: kafka-broker-0.kafka-headless.default.svc.cluster.local:9092
+    consumer:
+      group-id: notification
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 #  cloud:
 #    zookeeper:
 #      connect-string: localhost:2181
@@ -47,7 +55,16 @@ page:
 app:
   rmq-limit: 5
 
-routing-key:
-  account: accountRK
-  transfer: transferRK
-  cash: cashRK
+#routing-key:
+#  account: accountRK
+#  transfer: transferRK
+#  cash: cashRK
+
+# Kafka
+bootstrap:
+  servers: ${BOOTSTRAP_SERVERS}
+group:
+  id: ${GROUP_ID}
+auto:
+  offset:
+    reset: ${AUTO_OFFSET_RESET}

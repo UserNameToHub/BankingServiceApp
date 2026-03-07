@@ -18,27 +18,27 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class TransferService {
-    private final TransferRepository transferRepository;
-    private final OutboxRepository outboxRepository;
-
-    @Transactional
-    public Transfer create(TransferDto transferDto) {
-        log.debug("Starting create transfer from {}, to {}, amount {}",
-                transferDto.fromUser(), transferDto.toUser(), transferDto.amount());
-        Transfer transfer = Transfer.builder()
-                .createAt(LocalDate.now())
-                .fromUser(transferDto.fromUser())
-                .toUser(transferDto.toUser())
-                .amount(transferDto.amount())
-                .build();
-        Transfer savedTransfer = transferRepository.save(transfer);
-
-        log.debug("Starting create createOutbox");
-        CreateOutbox createOutbox = CreateOutbox.builder()
-                .entityId(savedTransfer.getId())
-                .microserviceType(MicroserviceType.TRANSFER)
-                .build();
-        outboxRepository.save(createOutbox);
-        return savedTransfer;
-    }
+//    private final TransferRepository transferRepository;
+//    private final OutboxRepository outboxRepository;
+//
+//    @Transactional
+//    public Transfer create(TransferDto transferDto) {
+//        log.debug("Starting create transfer from {}, to {}, amount {}",
+//                transferDto.fromUser(), transferDto.toUser(), transferDto.amount());
+//        Transfer transfer = Transfer.builder()
+//                .createAt(LocalDate.now())
+//                .fromUser(transferDto.fromUser())
+//                .toUser(transferDto.toUser())
+//                .amount(transferDto.amount())
+//                .build();
+//        Transfer savedTransfer = transferRepository.save(transfer);
+//
+//        log.debug("Starting create createOutbox");
+//        CreateOutbox createOutbox = CreateOutbox.builder()
+//                .entityId(savedTransfer.getId())
+//                .microserviceType(MicroserviceType.TRANSFER)
+//                .build();
+//        outboxRepository.save(createOutbox);
+//        return savedTransfer;
+//    }
 }

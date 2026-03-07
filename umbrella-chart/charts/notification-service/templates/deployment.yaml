@@ -17,3 +17,10 @@ spec:
               image: {{ .Values.image.repository }}
               ports:
                 - containerPort: 8084
+              env:
+                - name: BOOTSTRAP_SERVERS
+                  mountPath: { { .Values.global.consumerConfig.bootstrap.servers } }
+                - name: GROUP_ID
+                  mountPath: { { .Values.global.consumerConfig.group.id } }
+                - name: AUTO_OFFSET_RESET
+                  mountPath: { { .Values.global.consumerConfig.auto.offset.reset } }

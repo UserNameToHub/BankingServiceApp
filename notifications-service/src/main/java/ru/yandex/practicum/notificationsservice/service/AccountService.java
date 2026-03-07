@@ -18,25 +18,25 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AccountService {
-    private final AccountRepository accountRepository;
-    private final OutboxRepository outboxRepository;
-
-    @Transactional
-    public Account create(AccountDro accountDro) {
-        log.debug("Starting create account for {}", accountDro.username());
-        Account account = Account.builder()
-                .createAt(LocalDate.now())
-                .userName(accountDro.username())
-                .birthday(accountDro.birthday())
-                .build();
-        Account savedAccount = accountRepository.save(account);
-
-        log.debug("Starting create createOutbox for {}", accountDro.username());
-        CreateOutbox createOutbox = CreateOutbox.builder()
-                .entityId(savedAccount.getId())
-                .microserviceType(MicroserviceType.ACCOUNT)
-                .build();
-        outboxRepository.save(createOutbox);
-        return savedAccount;
-    }
+//    private final AccountRepository accountRepository;
+//    private final OutboxRepository outboxRepository;
+//
+//    @Transactional
+//    public Account create(AccountDro accountDro) {
+//        log.debug("Starting create account for {}", accountDro.username());
+//        Account account = Account.builder()
+//                .createAt(LocalDate.now())
+//                .userName(accountDro.username())
+//                .birthday(accountDro.birthday())
+//                .build();
+//        Account savedAccount = accountRepository.save(account);
+//
+//        log.debug("Starting create createOutbox for {}", accountDro.username());
+//        CreateOutbox createOutbox = CreateOutbox.builder()
+//                .entityId(savedAccount.getId())
+//                .microserviceType(MicroserviceType.ACCOUNT)
+//                .build();
+//        outboxRepository.save(createOutbox);
+//        return savedAccount;
+//    }
 }
