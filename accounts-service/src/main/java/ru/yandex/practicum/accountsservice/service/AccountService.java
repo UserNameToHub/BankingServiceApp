@@ -130,7 +130,7 @@ public class AccountService {
         Response preResponse = (Response) accountResponseDtoMapper.map(savedAccount);
         response = preResponse;
 
-        if (Objects.nonNull(response)) kafkaProducer.sendMessage(new AccountShortDto(name, birthdate));
+        kafkaProducer.sendMessage(new AccountShortDto(name, birthdate));
 
         return response;
     }
