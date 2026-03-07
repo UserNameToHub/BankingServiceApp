@@ -9,12 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.accountsservice.dto.*;
 import ru.yandex.practicum.accountsservice.entity.Account;
 import ru.yandex.practicum.accountsservice.exception.NoAccountException;
+import ru.yandex.practicum.accountsservice.kafka.MessageProducer;
 import ru.yandex.practicum.accountsservice.mapper.IMapper;
 import ru.yandex.practicum.accountsservice.repository.AccountRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static ru.yandex.practicum.accountsservice.util.Constant.*;
 
@@ -28,6 +30,7 @@ public class AccountService {
     @Qualifier(value = "accRespMapper")
     private final IMapper accountResponseDtoMapper;
     private final AccountRepository accountRepository;
+    private final MessageProducer kafkaProducer;
     private IResponseMessage response;
 
     @Transactional
@@ -126,6 +129,8 @@ public class AccountService {
 
         Response preResponse = (Response) accountResponseDtoMapper.map(savedAccount);
         response = preResponse;
+
+        if (Objects.nonNull(response)) kafkaProducer.sendMessage(new AccountShortDto(name, birthdate));
 
         return response;
     }

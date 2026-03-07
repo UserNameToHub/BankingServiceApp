@@ -22,8 +22,8 @@ public class TransferService {
         log.info("A transfer request from {} to {}, amount {}",
                 transferDto.fromLogin(), transferDto.toLogin(), transferDto.value());
         TransferResponse result = client.transfer(transferDto);
-        producer.sendMessage(transferDto);
         log.info("Successful transfer: {}", result);
+        producer.sendMessage(transferDto);
         return result;
     }
 }

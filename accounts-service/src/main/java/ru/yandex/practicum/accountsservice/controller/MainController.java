@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class MainController {
     private final AccountService accountService;
-    private final MessageProducer producer;
 
     @PostMapping("cash")
     public IResponseMessage editCash(@RequestBody CashDto action) {
@@ -29,7 +28,6 @@ public class MainController {
     public IResponseMessage editAccount(@RequestParam("login")String login,
                               @RequestParam("name") String name,
                               @RequestParam("birthdate") LocalDate birthdate) {
-        producer.sendMessage(new AccountShortDto(name, birthdate));
         return accountService.editAccount(login, name, birthdate);
     }
 
