@@ -1,0 +1,29 @@
+groups:
+  - name: transaction_group
+    rules:
+      - alert: HighNumberOfFailedWithdrawals
+        expr: sum(failed_withdrawals_total) > 100
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Высокий уровень ошибок при снятии денег"
+          description: "Наблюдается большое количество ошибочных операций снятия денег."
+
+      - alert: HighNumberOfFailedTransfers
+        expr: sum(failed_transfers_total) > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Высокий уровень ошибок при переводе денег"
+          description: "Много ошибочных переводов."
+
+      - alert: FailedNotificationsIncrease
+        expr: increase(failed_notifications_total[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Проблемы с уведомлениями"
+          description: "Пользователи часто сталкиваются с проблемами при получении уведомлений."

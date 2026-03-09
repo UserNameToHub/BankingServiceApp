@@ -1,0 +1,4 @@
+apiVersion: v2
+name: grafana-chart
+description: Grafana
+version: 0.9.0

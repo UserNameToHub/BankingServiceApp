@@ -38,6 +38,14 @@ spring:
     producer:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
+  management:
+    zipkin:
+      tracing:
+        endpoint: http://127.0.0.1:9411/api/v2/spans
+    tracing:
+      sampling:
+        probability: 1
+
 #  cloud:
 #    zookeeper:
 #      connect-string: localhost:2181

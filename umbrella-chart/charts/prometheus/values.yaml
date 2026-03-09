@@ -1,0 +1,21 @@
+configMap:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+      - targets: ['localhost:9090']
+    scrape_configs:
+    - job_name: 'orders-service'
+      metrics_path: '/actuator/prometheus'
+      scrape_interval: 15s 
+      static_configs:
+        - targets: ['localhost:8082']
+          labels:
+            application: 'cash-service'
+    rule_files: 
+    - "/templates/alert.rules.yml"
+
+service:
+  port: 9090
