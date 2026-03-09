@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zipkin
+  name: {{ .Release.Name }}-zipkin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zipkin
+      app: {{ .Release.Name }}-zipkin
   template:
     metadata:
       labels:
-        app: zipkin
+        app: {{ .Release.Name }}-zipkin
     spec:
       containers:
-        - name: zipkin
-          image: openzipkin/zipkin:latest
-          ports:
-            - containerPort: 9411
-          envFrom:
-            - configMapRef:
-                name: zipkin-config
+          - name: zipkin
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            ports:
+              - containerPort: {{ .Values.service.port }}
+            env:
+              - name: JAVA_OPTS
+                value: "-Dserver.port={{ .Values.service.port }}"

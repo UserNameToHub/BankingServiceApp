@@ -1,6 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: zipkin-config
+  name: {{ .Release.Name }}-zipkin-config
 data:
-  application.yml: |
+  zipkin.yml: |
+    storage:
+      type: {{ .Values.config.storage.type }}

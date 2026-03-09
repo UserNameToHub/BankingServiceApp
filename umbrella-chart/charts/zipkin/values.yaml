@@ -1,13 +1,9 @@
-configMap:
-  application.yml: |
-    # Здесь укажите ваши настройки для Zipkin
-
-deployment:
-  replicas: 1
-  containerPort: 9411
-
+image:
+  repository: openzipkin/zipkin
+  tag: latest
 service:
+  type: ClusterIP
   port: 9411
-
-ingress:
-  host: zipkin.example.com
+config:
+  storage:
+    type: mem
