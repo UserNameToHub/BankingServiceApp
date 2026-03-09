@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.cashservice.dto.CashDto;
+import ru.yandex.practicum.cashservice.service.NotificationFailureCounter;
 
 @Slf4j
 @Component
@@ -14,6 +15,7 @@ public class MessageProducer {
     @Value("${topic.name}")
     private String topic;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final NotificationFailureCounter counter;
 
     public void sendMessage(CashDto cashDto) {
         try {
@@ -24,6 +26,7 @@ public class MessageProducer {
             );
         } catch (Exception e) {
             log.error("Error sending " + topic, e);
+            counter.increment(cashDto.login());
         }
     }
 }

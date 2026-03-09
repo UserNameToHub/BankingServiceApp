@@ -1,0 +1,13 @@
+configMap:
+  application.yml: |
+    # Здесь укажите ваши настройки для Zipkin
+
+deployment:
+  replicas: 1
+  containerPort: 9411
+
+service:
+  port: 9411
+
+ingress:
+  host: zipkin.example.com

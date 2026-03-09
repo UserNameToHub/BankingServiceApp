@@ -24,6 +24,14 @@ spring:
 #            security: DEBUG
 #            web: DEBUG
 
+  management:
+    zipkin:
+      tracing:
+        endpoint: http://127.0.0.1:9411/api/v2/spans
+    tracing:
+      sampling:
+        probability: 1
+
   main:
     allow-bean-definition-overriding: true
 
@@ -32,3 +40,5 @@ server:
 
 gateway:
   base-url: http://localhost:8087
+
+

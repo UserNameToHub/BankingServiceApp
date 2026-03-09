@@ -17,6 +17,18 @@ spring:
       provider:
         keycloak:
           issuer-uri: http://localhost:8080/realms/bank-realm
+  management:
+    management:
+      zipkin:
+        tracing:
+          endpoint: http://127.0.0.1:9411/api/v2/spans
+      tracing:
+        sampling:
+          probability: 1
+    endpoints:
+      web:
+        exposure:
+          include: metrics, prometheus
 
 server:
   port: 8082

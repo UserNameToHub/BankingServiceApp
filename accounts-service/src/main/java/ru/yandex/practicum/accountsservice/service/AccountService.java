@@ -1,8 +1,12 @@
 package ru.yandex.practicum.accountsservice.service;
 
+import brave.Tracer;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final MessageProducer kafkaProducer;
     private IResponseMessage response;
+    private final WithdrawalFailureCounter counter;
 
     @Transactional
     public IResponseMessage editCash(CashDto dto) throws NoAccountException {
@@ -57,6 +62,7 @@ public class AccountService {
                             .info(null)
                             .build();
                     response = preResponse;
+                    counter.increment(dto.login());
                 }
             }
             default -> {
@@ -101,6 +107,7 @@ public class AccountService {
                    .build();
 
            response = preResponse;
+           counter.increment(transferDto.from(), transferDto.to());
        }
 
        return response;

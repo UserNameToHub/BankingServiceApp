@@ -7,13 +7,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  cloud:
-    zookeeper:
-      connect-string: localhost:2181
-      discovery:
-        enabled: true
-      config:
-        enabled: true
+#  cloud:
+#    zookeeper:
+#      connect-string: localhost:2181
+#      discovery:
+#        enabled: true
+#      config:
+#        enabled: true
 
   oauth2:
     resourceserver:
@@ -39,6 +39,18 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/scripts/db.changelog-master.xml
+
+  management:
+    zipkin:
+      tracing:
+        endpoint: http://127.0.0.1:9411/api/v2/spans
+    tracing:
+      sampling:
+        probability: 1
+    endpoints:
+      web:
+        exposure:
+          include: metrics, prometheus
 
 server:
   port: 8081

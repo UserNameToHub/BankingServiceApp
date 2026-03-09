@@ -1,0 +1,9 @@
+datasources:
+  prometheus:
+    enabled: true
+    type: prometheus
+    url: prometheus
+    access: direct
+    basicAuth: false
+    editable: true
+    isDefault: true
